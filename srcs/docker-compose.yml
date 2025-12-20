@@ -5,11 +5,8 @@ services:
     build: ./requirements/mariadb
     container_name: mariadb
     restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    env_file:
+      - .env
     volumes:
       - db_volume:/var/lib/mysql
     networks:
@@ -46,7 +43,9 @@ services:
 
 volumes:
   db_volume:
+    driver: local
   wp_volume:
+    driver: local
 
 networks:
   inception_net:

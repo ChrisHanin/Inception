@@ -1,12 +1,16 @@
 FROM debian:bullseye
 
-RUN apt-get update && apt-get install -y mariadb-server && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    mariadb-server \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copiar script de inicialización
-COPY conf/ /docker-entrypoint-initdb.d/
+RUN mkdir -p /var/run/mysqld && \
+    chown -R mysql:mysql /var/run/mysqld
 
-# Exponer puerto
+COPY conf/init.sql /docker-entrypoint-initdb.d/
+COPY tools/init.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/init.sh
+
 EXPOSE 3306
 
-# Ejecutar MariaDB en foreground
-CMD ["mysqld_safe"]
+CMD ["/usr/local/bin/init.sh"]
