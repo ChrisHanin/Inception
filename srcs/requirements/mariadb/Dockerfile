@@ -5,9 +5,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/run/mysqld && \
-    chown -R mysql:mysql /var/run/mysqld
+    chown -R mysql:mysql /var/run/mysqld /var/lib/mysql
 
-COPY conf/init.sql /docker-entrypoint-initdb.d/
 COPY tools/init.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/init.sh
 
