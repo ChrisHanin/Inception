@@ -50,3 +50,56 @@ volumes:
 networks:
   inception_net:
     driver: bridge
+
+
+# ###################
+# un archivo que dice:
+# “Estos contenedores existen, así se construyen, 
+# así se conectan y así se arrancan juntos”.
+# Con un solo comando (docker compose up) Docker levanta todo.
+# ###################
+# Docker Compose – Arquitectura del proyecto Inception
+# 📦 Servicios
+# 🔹 MariaDB
+# Contenedor: mariadb
+# Función: Base de datos de WordPress
+# Variables cargadas desde .env
+# Volumen persistente:
+# db_volume → /var/lib/mysql
+# Red: inception_net
+# 
+# 🔹 WordPress (PHP-FPM)
+# Contenedor: wordpress
+# Función: Ejecutar WordPress con PHP-FPM
+# Se conecta a MariaDB mediante:
+# WORDPRESS_DB_HOST=mariadb:3306
+# Volumen compartido:
+# wp_volume → /var/www/html
+# Puerto interno:
+# 9000 (PHP-FPM)
+# Depende de:
+# mariadb
+# 
+# 🔹 Nginx
+# Contenedor: nginx
+# Función: Servidor web + HTTPS
+# Puerto expuesto:
+# 443 (SSL)
+# Comparte archivos con WordPress:
+# wp_volume
+# Redirige PHP a:
+# wordpress:9000
+# Depende de:
+# wordpress
+# 
+# 🗄️ Volúmenes
+# Volumen	Uso
+# db_volume	Persistencia de la base de datos
+# wp_volume	Archivos de WordPress compartidos
+# 🌐 Red
+# 
+# Red privada Docker: inception_net
+# Tipo: bridge
+# Permite comunicación interna entre contenedores
+# No expone servicios directamente al host (excepto Nginx)
+# ###################

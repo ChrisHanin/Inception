@@ -31,3 +31,13 @@ RUN chmod +x /usr/local/bin/setup.sh
 EXPOSE 9000
 
 CMD ["/usr/local/bin/setup.sh"]
+
+
+# #########################
+# Este Dockerfile:
+# Prepara un Linux con PHP y todo lo que WordPress necesita
+# Configura PHP-FPM para trabajar con Nginx
+# Instala WP-CLI
+# Copia un script que automatiza WordPress
+# Deja el contenedor listo para arrancar solo
+# #########################
