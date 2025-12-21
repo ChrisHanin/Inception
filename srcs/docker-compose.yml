@@ -44,13 +44,21 @@ services:
 volumes:
   db_volume:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/chris/data/mariadb
+  
   wp_volume:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/chris/data/wordpress
 
 networks:
   inception_net:
     driver: bridge
-
 
 # ###################
 # un archivo que dice:

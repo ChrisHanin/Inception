@@ -30,6 +30,12 @@ if [ ! -f wp-config.php ]; then
         --admin_password="chanin123" \
         --admin_email="chanin@student.42.fr" \
         --allow-root
+
+    echo "Creando segundo usuario..."
+    wp user create wpuser wpuser@student.42.fr \
+        --role=author \
+        --user_pass="wpuser123" \
+        --allow-root
     
     echo "WordPress instalado correctamente!"
 else
