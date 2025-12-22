@@ -12,6 +12,13 @@ services:
     networks:
       - inception_net
 
+  redis:
+    build: ./requirements/bonus/redis
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - inception_net
+
   wordpress:
     build: ./requirements/wordpress
     container_name: wordpress
@@ -21,12 +28,14 @@ services:
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      REDIS_HOST: redis
     volumes:
       - wp_volume:/var/www/html
     networks:
       - inception_net
     depends_on:
       - mariadb
+      - redis
 
   nginx:
     build: ./requirements/nginx
@@ -40,6 +49,55 @@ services:
       - inception_net
     depends_on:
       - wordpress
+
+  ftp:
+    build: ./requirements/bonus/ftp
+    container_name: ftp
+    restart: unless-stopped
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    environment:
+      FTP_USER: ${FTP_USER}
+      FTP_PASSWORD: ${FTP_PASSWORD}
+    volumes:
+      - wp_volume:/var/www/html
+    networks:
+      - inception_net
+    depends_on:
+      - wordpress
+
+  static-site:
+    build: ./requirements/bonus/static-site
+    container_name: static-site
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - inception_net
+
+  adminer:
+    build: ./requirements/bonus/adminer
+    container_name: adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    networks:
+      - inception_net
+    depends_on:
+      - mariadb
+
+  portainer:
+    build: ./requirements/bonus/portainer
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - inception_net
 
 volumes:
   db_volume:
@@ -55,6 +113,9 @@ volumes:
       type: none
       o: bind
       device: /home/chris/data/wordpress
+
+  portainer_data:
+    driver: local
 
 networks:
   inception_net:

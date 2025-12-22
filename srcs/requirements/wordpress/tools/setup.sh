@@ -22,6 +22,12 @@ if [ ! -f wp-config.php ]; then
         --dbhost="${WORDPRESS_DB_HOST}" \
         --allow-root
     
+    # Configurar Redis en wp-config.php
+    echo "Configurando Redis..."
+    wp config set WP_REDIS_HOST "${REDIS_HOST}" --allow-root
+    wp config set WP_REDIS_PORT 6379 --raw --allow-root
+    wp config set WP_CACHE true --raw --allow-root
+
     echo "Instalando WordPress..."
     wp core install \
         --url="https://chanin.42.fr" \
@@ -37,6 +43,11 @@ if [ ! -f wp-config.php ]; then
         --user_pass="wpuser123" \
         --allow-root
     
+    # Instalar y activar Redis Object Cache
+    echo "Instalando plugin Redis Object Cache..."
+    wp plugin install redis-cache --activate --allow-root
+    wp redis enable --allow-root
+
     echo "WordPress instalado correctamente!"
 else
     echo "WordPress ya está configurado"
